@@ -12,11 +12,11 @@ public class Professionnel extends Personne {
     private SecteurActivite secteurActivite;
     private String activite;
 
-    public Professionnel(String nom, String prenom, LocalDate dateNaissance, String ville, int nombreEnfants,
+    public Professionnel(long id,String nom, String prenom, LocalDate dateNaissance, String ville, int nombreEnfants,
                          double investissement, double placement, SituationFamiliale situationFamiliale,
                          LocalDateTime createdAt, int score, double revenu, String immatriculationFiscale,
                          SecteurActivite secteurActivite, String activite) {
-        super(nom, prenom, dateNaissance, ville, nombreEnfants, investissement, placement, situationFamiliale, createdAt, score);
+        super(id,nom, prenom, dateNaissance, ville, nombreEnfants, investissement, placement, situationFamiliale, createdAt, score);
         this.revenu = revenu;
         this.immatriculationFiscale = immatriculationFiscale;
         this.secteurActivite = secteurActivite;

@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public abstract class Personne {
+    private long id;
     private String nom;
     private String prenom;
     private LocalDate dateNaissance;
@@ -17,9 +18,10 @@ public abstract class Personne {
     private LocalDateTime createdAt;
     private int score;
 
-    public Personne(String nom, String prenom, LocalDate dateNaissance, String ville, int nombreEnfants,
+    public Personne(long id,String nom, String prenom, LocalDate dateNaissance, String ville, int nombreEnfants,
                     double investissement, double placement, SituationFamiliale situationFamiliale,
                     LocalDateTime createdAt, int score) {
+        this.id = id;
         this.nom = nom;
         this.prenom = prenom;
         this.dateNaissance = dateNaissance;
@@ -33,6 +35,8 @@ public abstract class Personne {
     }
 
     // Getters and Setters
+    public long getId() { return id; }
+    public void setId(long id) { this.id = id; }
     public String getNom() { return nom; }
     public void setNom(String nom) { this.nom = nom; }
     public String getPrenom() { return prenom; }
@@ -56,7 +60,8 @@ public abstract class Personne {
 
     @Override
     public String toString() {
-        return "Personne{" +
+        return "Personne{ " +
+                "id=" + id +
                 "nom='" + nom + '\'' +
                 ", prenom='" + prenom + '\'' +
                 ", dateNaissance=" + dateNaissance +
