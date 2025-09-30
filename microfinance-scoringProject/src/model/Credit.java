@@ -1,5 +1,7 @@
 package model;
 
+import model.enums.Decision;
+
 import java.time.LocalDate;
 
 public class Credit {

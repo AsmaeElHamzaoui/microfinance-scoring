@@ -1,5 +1,7 @@
 package model;
 
+import model.enums.TypeIncident;
+
 import java.time.LocalDate;
 
 public class Incident {

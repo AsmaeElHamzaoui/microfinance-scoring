@@ -1,5 +1,8 @@
 package model;
 
+import model.enums.SecteurActivite;
+import model.enums.SituationFamiliale;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 

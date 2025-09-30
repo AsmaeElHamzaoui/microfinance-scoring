@@ -1,5 +1,9 @@
 package model;
 
+import model.enums.SecteurEmploye;
+import model.enums.SituationFamiliale;
+import model.enums.TypeContrat;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 

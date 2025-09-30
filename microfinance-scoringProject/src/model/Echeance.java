@@ -1,5 +1,7 @@
 package model;
 
+import model.enums.StatutPaiement;
+
 import java.time.LocalDate;
 
 public class Echeance {
