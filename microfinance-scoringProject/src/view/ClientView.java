@@ -35,6 +35,9 @@ public class ClientView {
                     ajouterPersonne();
                     break;
                 case 2:
+                    rechercherPersonneParId();
+                    break;
+                case 3:
                     running= false;
                     break;
                 default:
@@ -106,7 +109,7 @@ public class ClientView {
             System.out.print("Secteur employé (PUBLIC, GRANDE_ENTREPRISE, PME) : ");
             SecteurEmploye secteur = SecteurEmploye.valueOf(sc.nextLine().toUpperCase());
 
-            Employe e = new Employe(0, nom, prenom, dateNaissance, ville, nbEnfants,
+            Employe e = new Employe(nom, prenom, dateNaissance, ville, nbEnfants,
                     investissement, placement, situation, createdAt, score,
                     salaire, anciennete, poste, contrat, secteur);
             clientService.ajouterPersonne(e);
@@ -118,14 +121,13 @@ public class ClientView {
 
             System.out.println("immatriculation Fiscale :");
             String immatriculation = sc.nextLine();
-
-            System.out.print("Secteur activité (COMMERCE, INDUSTRIE, SERVICES, AUTRE) : ");
+            System.out.print("Secteur activité (AGRICULTURE, SERVICE, COMMERCE, CONSTRUCTION) : ");
             SecteurActivite secteur = SecteurActivite.valueOf(sc.nextLine().toUpperCase());
 
             System.out.print("Activité : ");
             String activite = sc.nextLine();
 
-            Professionnel p = new Professionnel(0, nom, prenom, dateNaissance, ville, nbEnfants,
+            Professionnel p = new Professionnel(nom, prenom, dateNaissance, ville, nbEnfants,
                     investissement, placement, situation, createdAt, score,
                     revenu, immatriculation, secteur, activite);
             clientService.ajouterPersonne(p);
@@ -134,5 +136,12 @@ public class ClientView {
         }
     }
 
+    //afficher personne par id :
+    public static void rechercherPersonneParId() throws SQLException {
+        System.out.println("Enter l'id de la personne à chercher:");
+        Long id = sc.nextLong();
+        sc.nextLine();
+        clientService.chercherClientParId(id);
+    }
 
 }

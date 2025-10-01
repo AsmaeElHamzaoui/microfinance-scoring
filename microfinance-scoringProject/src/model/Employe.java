@@ -3,7 +3,6 @@ package model;
 import model.enums.SecteurEmploye;
 import model.enums.SituationFamiliale;
 import model.enums.TypeContrat;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -14,11 +13,12 @@ public class Employe extends Personne {
     private TypeContrat typeContrat;
     private SecteurEmploye secteur;
 
-    public Employe(long id,String nom, String prenom, LocalDate dateNaissance, String ville, int nombreEnfants,
+    // Constructeur sans id
+    public Employe(String nom, String prenom, LocalDate dateNaissance, String ville, int nombreEnfants,
                    double investissement, double placement, SituationFamiliale situationFamiliale,
                    LocalDateTime createdAt, int score, double salaire, int anciennete, String poste,
                    TypeContrat typeContrat, SecteurEmploye secteur) {
-        super(id,nom, prenom, dateNaissance, ville, nombreEnfants, investissement, placement, situationFamiliale, createdAt, score);
+        super(nom, prenom, dateNaissance, ville, nombreEnfants, investissement, placement, situationFamiliale, createdAt, score);
         this.salaire = salaire;
         this.anciennete = anciennete;
         this.poste = poste;
@@ -26,7 +26,7 @@ public class Employe extends Personne {
         this.secteur = secteur;
     }
 
-    // Getters and Setters
+    // Getters & Setters
     public double getSalaire() { return salaire; }
     public void setSalaire(double salaire) { this.salaire = salaire; }
     public int getAnciennete() { return anciennete; }
@@ -49,4 +49,3 @@ public class Employe extends Personne {
                 '}';
     }
 }
-

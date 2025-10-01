@@ -1,12 +1,11 @@
-
 package model;
-import model.enums.SituationFamiliale;
 
+import model.enums.SituationFamiliale;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public abstract class Personne {
-    private long id;
+    private long id; // sera généré par la DB
     private String nom;
     private String prenom;
     private LocalDate dateNaissance;
@@ -18,10 +17,11 @@ public abstract class Personne {
     private LocalDateTime createdAt;
     private int score;
 
-    public Personne(long id,String nom, String prenom, LocalDate dateNaissance, String ville, int nombreEnfants,
+    // Constructeur sans id pour la création
+    public Personne(String nom, String prenom, LocalDate dateNaissance, String ville, int nombreEnfants,
                     double investissement, double placement, SituationFamiliale situationFamiliale,
                     LocalDateTime createdAt, int score) {
-        this.id = id;
+        this.id = 0; // temporaire avant insertion
         this.nom = nom;
         this.prenom = prenom;
         this.dateNaissance = dateNaissance;
@@ -34,7 +34,7 @@ public abstract class Personne {
         this.score = score;
     }
 
-    // Getters and Setters
+    // Getters et Setters
     public long getId() { return id; }
     public void setId(long id) { this.id = id; }
     public String getNom() { return nom; }
@@ -60,9 +60,9 @@ public abstract class Personne {
 
     @Override
     public String toString() {
-        return "Personne{ " +
+        return "Personne{" +
                 "id=" + id +
-                "nom='" + nom + '\'' +
+                ", nom='" + nom + '\'' +
                 ", prenom='" + prenom + '\'' +
                 ", dateNaissance=" + dateNaissance +
                 ", ville='" + ville + '\'' +
