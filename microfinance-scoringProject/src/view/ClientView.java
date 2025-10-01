@@ -1,16 +1,19 @@
 package view;
 
 import model.Employe;
+import model.Personne;
 import model.Professionnel;
 import model.enums.SecteurActivite;
 import model.enums.SecteurEmploye;
 import model.enums.SituationFamiliale;
 import model.enums.TypeContrat;
+import org.postgresql.util.OSUtil;
 import service.ClientService;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.Scanner;
 
 public class ClientView {
@@ -141,7 +144,13 @@ public class ClientView {
         System.out.println("Enter l'id de la personne à chercher:");
         Long id = sc.nextLong();
         sc.nextLine();
-        clientService.chercherClientParId(id);
+        Optional<Personne> personne=clientService.chercherClientParId(id);
+        if(personne.isPresent()){
+            System.out.println("personne trouvée :");
+            System.out.println(personne.get().toString());
+        }else{
+            System.out.println("aucune personne est trouvée avec l'id =" +id);
+        }
     }
 
 }
