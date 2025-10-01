@@ -46,6 +46,9 @@ public class ClientView {
                     getAllPersonne();
                     break;
                 case 4:
+                    supprimerPersonne();
+                    break;
+                case 5:
                     running= false;
                     break;
                 default:
@@ -172,4 +175,19 @@ public class ClientView {
 
 
     }
+
+    //Supprimer une personne
+    public static void supprimerPersonne() throws SQLException {
+        System.out.println("Saisir l'id de l'élément à chercher :");
+        int id=sc.nextInt();
+        sc.nextLine();
+
+        try{
+            clientService.deletePersonne(id);
+            System.out.println("Le client est bien supprimé");
+        }catch(Exception e){
+            System.out.println("Erreur :" +e.getMessage());
+        }
+    }
+
 }

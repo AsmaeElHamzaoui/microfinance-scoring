@@ -102,6 +102,20 @@ public class ClientRepository {
 
     }
 
+    public void update(Personne personne){
+       String query="UPDATE personne SET ";
+    }
+
+    public void delete(int id) throws SQLException{
+        String query ="Delete FROM personne WHERE id=?";
+        try(Connection con=DatabaseConnection.getConnection()){
+            PreparedStatement stmt=con.prepareStatement(query);
+            stmt.setInt(1,id);
+            stmt.executeUpdate();
+        }
+    }
+
+
     private Personne mapResultSetToPersonne(ResultSet rs) throws SQLException {
         String type = rs.getString("type_client");
         if ("EMPLOYE".equals(type)) {

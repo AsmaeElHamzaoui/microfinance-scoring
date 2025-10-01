@@ -28,7 +28,7 @@ public class ClientService {
         }
     }
 
-    public static List<Personne> getAllPersonne() throws SQLException{
+    public List<Personne> getAllPersonne() throws SQLException{
 
         try{
             return repoPersone.getAllPersonne();
@@ -37,5 +37,9 @@ public class ClientService {
             return  List.of(); // retourner une liste vide dans le cas ou aucune personne existe
         }
 
+    }
+
+    public  void deletePersonne(int id) throws SQLException{
+        repoPersone.delete(id);
     }
 }
