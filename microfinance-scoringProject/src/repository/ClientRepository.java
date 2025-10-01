@@ -6,6 +6,8 @@ import model.Professionnel;
 import util.DatabaseConnection;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class ClientRepository {
@@ -83,6 +85,21 @@ public class ClientRepository {
             }
         }
         return Optional.empty();
+    }
+
+    public List<Personne> getAllPersonne() throws SQLException{
+      String  query="SELECT * FROM personne";
+      List<Personne> personnes=new ArrayList<>();
+      try(Connection con=DatabaseConnection.getConnection()){
+          PreparedStatement stmt =con.prepareStatement(query);
+          ResultSet rs=stmt.executeQuery();
+
+          while(rs.next()){
+              personnes.add(mapResultSetToPersonne(rs));
+          }
+          return personnes;
+      }
+
     }
 
     private Personne mapResultSetToPersonne(ResultSet rs) throws SQLException {

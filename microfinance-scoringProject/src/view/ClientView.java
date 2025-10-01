@@ -13,6 +13,8 @@ import service.ClientService;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
@@ -41,6 +43,9 @@ public class ClientView {
                     rechercherPersonneParId();
                     break;
                 case 3:
+                    getAllPersonne();
+                    break;
+                case 4:
                     running= false;
                     break;
                 default:
@@ -153,4 +158,18 @@ public class ClientView {
         }
     }
 
+
+    //afficher tout les personnes (avec les détails selon le type)
+    public static void getAllPersonne() throws SQLException{
+        System.out.println("voici la liste de tout les personnes :");
+        List<Personne> personnes=clientService.getAllPersonne();
+
+        if(personnes.isEmpty()){
+            System.out.println("Aucune personne récupérée");
+        }else{
+            personnes.forEach(System.out::println);
+        }
+
+
+    }
 }

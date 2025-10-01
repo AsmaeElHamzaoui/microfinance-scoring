@@ -3,6 +3,8 @@ package service;
 import model.Personne;
 import repository.ClientRepository;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class ClientService {
@@ -24,5 +26,16 @@ public class ClientService {
             e.printStackTrace();
             return Optional.empty();
         }
+    }
+
+    public static List<Personne> getAllPersonne() throws SQLException{
+
+        try{
+            return repoPersone.getAllPersonne();
+        }catch(Exception e){
+            e.printStackTrace();
+            return  List.of(); // retourner une liste vide dans le cas ou aucune personne existe
+        }
+
     }
 }
