@@ -39,6 +39,14 @@ public class ClientService {
 
     }
 
+    public void update(Personne personne){
+      try{
+          repoPersone.update(personne);
+      }catch (Exception e){
+          e.printStackTrace();
+      }
+    }
+
     public  void deletePersonne(int id) throws SQLException{
         repoPersone.delete(id);
     }

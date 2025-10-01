@@ -177,7 +177,7 @@ public class ClientView {
     }
 
     //Supprimer une personne
-    public static void supprimerPersonne() throws SQLException {
+    public static void supprimerPersonne(){
         System.out.println("Saisir l'id de l'élément à chercher :");
         int id=sc.nextInt();
         sc.nextLine();
@@ -189,5 +189,107 @@ public class ClientView {
             System.out.println("Erreur :" +e.getMessage());
         }
     }
+
+    //Modifier une personne
+    public static void modifierPersonne() {
+        System.out.print("ID de la personne à modifier : ");
+        long updateId = sc.nextLong();
+        sc.nextLine();
+
+        try {
+            Optional<Personne> optionalPersonne = clientService.chercherClientParId(updateId);
+            if (optionalPersonne.isPresent()) {
+                Personne existingPersonne = optionalPersonne.get();
+
+                System.out.print("Nouveau nom (actuel: " + existingPersonne.getNom() + ") : ");
+                String newNom = sc.nextLine();
+                if (newNom.isEmpty()) newNom = existingPersonne.getNom();
+
+                System.out.print("Nouveau prénom (actuel: " + existingPersonne.getPrenom() + ") : ");
+                String newPrenom = sc.nextLine();
+                if (newPrenom.isEmpty()) newPrenom = existingPersonne.getPrenom();
+
+                System.out.print("Nouvelle ville (actuelle: " + existingPersonne.getVille() + ") : ");
+                String newVille = sc.nextLine();
+                if (newVille.isEmpty()) newVille = existingPersonne.getVille();
+
+                System.out.print("Nombre d'enfants (actuel: " + existingPersonne.getNombreEnfants() + ") : ");
+                String nbEnfantsInput = sc.nextLine();
+                int newNbEnfants = nbEnfantsInput.isEmpty() ? existingPersonne.getNombreEnfants() : Integer.parseInt(nbEnfantsInput);
+
+                System.out.print("Investissement (actuel: " + existingPersonne.getInvestissement() + ") : ");
+                String investInput = sc.nextLine();
+                double newInvestissement = investInput.isEmpty() ? existingPersonne.getInvestissement() : Double.parseDouble(investInput);
+
+                System.out.print("Placement (actuel: " + existingPersonne.getPlacement() + ") : ");
+                String placementInput = sc.nextLine();
+                double newPlacement = placementInput.isEmpty() ? existingPersonne.getPlacement() : Double.parseDouble(placementInput);
+
+                System.out.print("Situation familiale (actuelle: " + existingPersonne.getSituationFamiliale() + ") : ");
+                String situationInput = sc.nextLine();
+                SituationFamiliale newSituation = situationInput.isEmpty() ? existingPersonne.getSituationFamiliale() : SituationFamiliale.valueOf(situationInput.toUpperCase());
+
+                if (existingPersonne instanceof Employe e) {
+                    System.out.print("Salaire (actuel: " + e.getSalaire() + ") : ");
+                    String salaireInput = sc.nextLine();
+                    double newSalaire = salaireInput.isEmpty() ? e.getSalaire() : Double.parseDouble(salaireInput);
+
+                    System.out.print("Ancienneté (actuelle: " + e.getAnciennete() + ") : ");
+                    String ancienneteInput = sc.nextLine();
+                    int newAnciennete = ancienneteInput.isEmpty() ? e.getAnciennete() : Integer.parseInt(ancienneteInput);
+
+                    System.out.print("Poste (actuel: " + e.getPoste() + ") : ");
+                    String newPoste = sc.nextLine();
+                    if (newPoste.isEmpty()) newPoste = e.getPoste();
+
+                    System.out.print("Type contrat (actuel: " + e.getTypeContrat() + ") : ");
+                    String contratInput = sc.nextLine();
+                    TypeContrat newTypeContrat = contratInput.isEmpty() ? e.getTypeContrat() : TypeContrat.valueOf(contratInput.toUpperCase());
+
+                    System.out.print("Secteur employé (actuel: " + e.getSecteur() + ") : ");
+                    String secteurInput = sc.nextLine();
+                    SecteurEmploye newSecteur = secteurInput.isEmpty() ? e.getSecteur() : SecteurEmploye.valueOf(secteurInput.toUpperCase());
+
+                    Employe updatedEmploye = new Employe(newNom, newPrenom, e.getDateNaissance(), newVille, newNbEnfants,
+                            newInvestissement, newPlacement, newSituation, e.getCreatedAt(), e.getScore(),
+                            newSalaire, newAnciennete, newPoste, newTypeContrat, newSecteur);
+                    updatedEmploye.setId(existingPersonne.getId());
+                    clientService.update(updatedEmploye);
+
+                } else if (existingPersonne instanceof Professionnel p) {
+                    System.out.print("Revenu (actuel: " + p.getRevenu() + ") : ");
+                    String revenuInput = sc.nextLine();
+                    double newRevenu = revenuInput.isEmpty() ? p.getRevenu() : Double.parseDouble(revenuInput);
+
+                    System.out.print("Immatriculation fiscale (actuelle: " + p.getImmatriculationFiscale() + ") : ");
+                    String newImmatriculation = sc.nextLine();
+                    if (newImmatriculation.isEmpty()) newImmatriculation = p.getImmatriculationFiscale();
+
+                    System.out.print("Secteur activité (actuel: " + p.getSecteurActivite() + ") : ");
+                    String secteurInput = sc.nextLine();
+                    SecteurActivite newSecteurActivite = secteurInput.isEmpty() ? p.getSecteurActivite() : SecteurActivite.valueOf(secteurInput.toUpperCase());
+
+                    System.out.print("Activité (actuelle: " + p.getActivite() + ") : ");
+                    String newActivite = sc.nextLine();
+                    if (newActivite.isEmpty()) newActivite = p.getActivite();
+
+                    Professionnel updatedProfessionnel = new Professionnel(newNom, newPrenom, p.getDateNaissance(), newVille, newNbEnfants,
+                            newInvestissement, newPlacement, newSituation, p.getCreatedAt(), p.getScore(),
+                            newRevenu, newImmatriculation, newSecteurActivite, newActivite);
+                    updatedProfessionnel.setId(existingPersonne.getId());
+                    clientService.update(updatedProfessionnel);
+                }
+
+                System.out.println("Personne modifiée avec succès.");
+
+            } else {
+                System.out.println("Personne non trouvée.");
+            }
+        } catch (Exception e) {
+            System.out.println("Erreur : " + e.getMessage());
+        }
+    }
+
+
 
 }

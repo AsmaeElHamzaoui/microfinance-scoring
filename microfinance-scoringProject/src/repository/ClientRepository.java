@@ -102,8 +102,56 @@ public class ClientRepository {
 
     }
 
-    public void update(Personne personne){
-       String query="UPDATE personne SET ";
+    public void update(Personne personne) throws SQLException {
+        String query = "UPDATE personne SET nom = ?, prenom = ?, date_naissance = ?, ville = ?, " +
+                "nombre_enfants = ?, investissement = ?, placement = ?, situation_familiale = ?, " +
+                "score = ?, type_client = ?, salaire = ?, anciennete = ?, poste = ?, type_contrat = ?, " +
+                "secteur_employe = ?, revenu = ?, immatriculation_fiscale = ?, secteur_activite = ?, activite = ? " +
+                "WHERE id = ?";
+
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement stmt = con.prepareStatement(query)) {
+
+            stmt.setString(1, personne.getNom());
+            stmt.setString(2, personne.getPrenom());
+            stmt.setDate(3, Date.valueOf(personne.getDateNaissance()));
+            stmt.setString(4, personne.getVille());
+            stmt.setInt(5, personne.getNombreEnfants());
+            stmt.setDouble(6, personne.getInvestissement());
+            stmt.setDouble(7, personne.getPlacement());
+            stmt.setString(8, personne.getSituationFamiliale().name());
+            stmt.setInt(9, personne.getScore());
+
+            if (personne instanceof Employe e) {
+                stmt.setString(10, "EMPLOYE");
+                stmt.setDouble(11, e.getSalaire());
+                stmt.setInt(12, e.getAnciennete());
+                stmt.setString(13, e.getPoste());
+                stmt.setString(14, e.getTypeContrat().name());
+                stmt.setString(15, e.getSecteur().name());
+
+                stmt.setNull(16, Types.DOUBLE);
+                stmt.setNull(17, Types.VARCHAR);
+                stmt.setNull(18, Types.VARCHAR);
+                stmt.setNull(19, Types.VARCHAR);
+            } else if (personne instanceof Professionnel p) {
+                stmt.setString(10, "PROFESSIONNEL");
+                stmt.setNull(11, Types.DOUBLE);
+                stmt.setNull(12, Types.INTEGER);
+                stmt.setNull(13, Types.VARCHAR);
+                stmt.setNull(14, Types.VARCHAR);
+                stmt.setNull(15, Types.VARCHAR);
+
+                stmt.setDouble(16, p.getRevenu());
+                stmt.setString(17, p.getImmatriculationFiscale());
+                stmt.setString(18, p.getSecteurActivite().name());
+                stmt.setString(19, p.getActivite());
+            }
+
+            stmt.setLong(20, personne.getId());
+
+            stmt.executeUpdate();
+        }
     }
 
     public void delete(int id) throws SQLException{
@@ -114,7 +162,6 @@ public class ClientRepository {
             stmt.executeUpdate();
         }
     }
-
 
     private Personne mapResultSetToPersonne(ResultSet rs) throws SQLException {
         String type = rs.getString("type_client");
