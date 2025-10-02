@@ -5,6 +5,9 @@ import model.enums.Decision;
 import java.time.LocalDate;
 
 public class Credit {
+
+    private int id;
+    private long clientId;
     private LocalDate dateCredit;
     private double montantDemande;
     private double montantOctroye;
@@ -13,8 +16,9 @@ public class Credit {
     private String typeCredit;
     private Decision decision;
 
-    public Credit(LocalDate dateCredit, double montantDemande, double montantOctroye, double tauxInteret,
+    public Credit(long clientId,LocalDate dateCredit, double montantDemande, double montantOctroye, double tauxInteret,
                   int dureeEnMois, String typeCredit, Decision decision) {
+        this.clientId = clientId;
         this.dateCredit = dateCredit;
         this.montantDemande = montantDemande;
         this.montantOctroye = montantOctroye;
@@ -22,9 +26,14 @@ public class Credit {
         this.dureeEnMois = dureeEnMois;
         this.typeCredit = typeCredit;
         this.decision = decision;
+
     }
 
     // Getters and Setters
+    public int getId() {return id;}
+    public void setId(int id) {this.id = id;}
+    public long getClientId() {return clientId;}
+    public void setClientId(long clientId) {this.clientId = clientId;}
     public LocalDate getDateCredit() { return dateCredit; }
     public void setDateCredit(LocalDate dateCredit) { this.dateCredit = dateCredit; }
     public double getMontantDemande() { return montantDemande; }
