@@ -5,6 +5,7 @@ import model.enums.StatutPaiement;
 import java.time.LocalDate;
 
 public class Echeance {
+    private int id;
     private int creditId;
     private LocalDate dateEcheance;
     private double mensualite;
@@ -20,6 +21,8 @@ public class Echeance {
     }
 
     // Getters and Setters
+    public int getId() {return id;}
+    public void setId(int id) {this.id = id;}
     public int getCreditId() {return creditId;}
     public void setCreditId(int creditId) {this.creditId = creditId;}
     public LocalDate getDateEcheance() { return dateEcheance; }

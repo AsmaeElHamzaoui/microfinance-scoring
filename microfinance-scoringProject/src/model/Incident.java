@@ -5,6 +5,7 @@ import model.enums.TypeIncident;
 import java.time.LocalDate;
 
 public class Incident {
+    private int id;
     private int echeanceId;
     private LocalDate dateIncident;
     private Echeance echeance;
@@ -20,7 +21,8 @@ public class Incident {
     }
 
     // Getters and Setters
-
+    public int getId() {return id;}
+    public void setId(int id) {this.id = id;}
     public int getEcheanceId() {return echeanceId;}
     public void setEcheanceId(int echeanceId) {this.echeanceId = echeanceId;}
     public LocalDate getDateIncident() { return dateIncident; }
