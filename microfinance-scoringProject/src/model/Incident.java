@@ -5,12 +5,14 @@ import model.enums.TypeIncident;
 import java.time.LocalDate;
 
 public class Incident {
+    private int echeanceId;
     private LocalDate dateIncident;
     private Echeance echeance;
     private int score;
     private TypeIncident typeIncident;
 
-    public Incident(LocalDate dateIncident, Echeance echeance, int score, TypeIncident typeIncident) {
+    public Incident(int echeanceId,LocalDate dateIncident, Echeance echeance, int score, TypeIncident typeIncident) {
+        this.echeanceId=echeanceId;
         this.dateIncident = dateIncident;
         this.echeance = echeance;
         this.score = score;
@@ -18,6 +20,9 @@ public class Incident {
     }
 
     // Getters and Setters
+
+    public int getEcheanceId() {return echeanceId;}
+    public void setEcheanceId(int echeanceId) {this.echeanceId = echeanceId;}
     public LocalDate getDateIncident() { return dateIncident; }
     public void setDateIncident(LocalDate dateIncident) { this.dateIncident = dateIncident; }
     public Echeance getEcheance() { return echeance; }
