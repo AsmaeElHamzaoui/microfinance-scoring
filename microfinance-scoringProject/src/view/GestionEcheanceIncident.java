@@ -234,23 +234,54 @@ public class GestionEcheanceIncident {
         long clientId = scanner.nextLong();
         scanner.nextLine();
 
+        // 1. Vérifier si le client existe
         Optional<Personne> persoOpt = ClientService.chercherClientParId(clientId);
         if (!persoOpt.isPresent()) {
             System.out.println("Client introuvable !");
             return;
         }
-
         Personne p = persoOpt.get();
 
-        // Calcul du score total
+        // 2. Récupérer les crédits du client
+        List<Credit> credits = CreditService.getCreditsByClientId(clientId);
+        if (credits.isEmpty()) {
+            System.out.println("Aucun crédit trouvé pour ce client !");
+            return;
+        }
+
+        // 3. Choisir le crédit (si plusieurs)
+        Credit credit;
+        if (credits.size() == 1) {
+            credit = credits.get(0);
+        } else {
+            System.out.println("Crédits du client :");
+            for (int i = 0; i < credits.size(); i++) {
+                Credit c = credits.get(i);
+                System.out.printf("[%d] Crédit ID=%d, Montant demandé=%.2f, Décision=%s%n",
+                        i + 1, c.getId(), c.getMontantDemande(),
+                        c.getDecision() != null ? c.getDecision() : "NON DÉFINIE");
+            }
+            System.out.print("Choisissez le crédit à analyser : ");
+            int choix = scanner.nextInt();
+            scanner.nextLine();
+
+            if (choix < 1 || choix > credits.size()) {
+                System.out.println("Choix invalide !");
+                return;
+            }
+            credit = credits.get(choix - 1);
+        }
+
+        // 4. Calcul du score et décision
         int score = ScoringSystem.totalScore(p);
-        // Décision automatique initiale
+        p.setScore(score); // maj du score de la personne (utile pour logs ou stats)
+
         Decision decision = ScoringSystem.decisonAutomatique(p);
 
         System.out.println("Score total : " + score + "/100");
         System.out.println("Décision automatique : " + decision);
 
-        // Cas spécifique : étude manuelle
+        // 5. Cas spécifique : étude manuelle
         if (decision == Decision.ETUDE_MANUELLE) {
             System.out.println("Le score du client nécessite une étude manuelle.");
             System.out.println("Veuillez examiner ses échéances et incidents avant de décider.");
@@ -269,8 +300,13 @@ public class GestionEcheanceIncident {
             }
         }
 
-        // Affichage de la décision finale (après éventuelle étude manuelle)
-        System.out.println(">>> Décision finale : " + decision);
+        // 6. Sauvegarde de la décision dans le crédit
+        credit.setDecision(decision);
+        CreditService service = new CreditService();
+        service.updateCredit(credit);
+
+        // 7. Affichage final
+        System.out.println(">>> Décision finale : " + decision + " (enregistrée en base pour le crédit ID=" + credit.getId() + ")");
     }
 
 }

@@ -211,7 +211,7 @@ public class ScoringSystem {
     }
 
     //Caclcul du montant octroyé:
-    public static double calculMontantOctroye(Personne personne) throws SQLException {
+    public static double calculMontantOctroye(Personne personne) throws Exception {
         List<Credit> listCredit = CreditService.getCreditsByClientId(personne.getId());
         boolean nouveau = listCredit.isEmpty();
         double montantOctroye = 0;
@@ -231,7 +231,7 @@ public class ScoringSystem {
 
 
     //Décision automatique :
-    public static Decision decisonAutomatique(Personne personne) throws SQLException {
+    public static Decision decisonAutomatique(Personne personne) throws Exception {
         List<Credit> listCredit = CreditService.getCreditsByClientId(personne.getId());
         boolean nouveau = listCredit.isEmpty();
 
