@@ -1,6 +1,7 @@
 package view;
 
 import model.*;
+import model.enums.Decision;
 import model.enums.StatutPaiement;
 import model.enums.TypeIncident;
 import service.*;
@@ -8,6 +9,7 @@ import service.*;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
@@ -16,22 +18,35 @@ public class GestionEcheanceIncident {
 
     private static final Scanner scanner = new Scanner(System.in);
 
-    public  void gestionEcheanceIncident() throws Exception {
+    public void gestionEcheanceIncident() throws Exception {
 
-        boolean runnig=true;
+        boolean runnig = true;
 
-        while(runnig) {
+        while (runnig) {
             showMenu();
-            int choix= scanner.nextInt();
+            int choix = scanner.nextInt();
             scanner.nextLine();
-            switch(choix){
-                case 1: genererEcheances(); break;
-                case 2: afficherEcheances(); break;
-                case 3: enregistrerPaiement(); break;
-                case 4: afficherIncidents(); break;
-                //case 5: verifierScoreClient(); break;
-                case 6: MenuPrincipale.start(); break;
-                default: System.out.println("Choix invalide !");
+            switch (choix) {
+                case 1:
+                    genererEcheances();
+                    break;
+                case 2:
+                    afficherEcheances();
+                    break;
+                case 3:
+                    enregistrerPaiement();
+                    break;
+                case 4:
+                    afficherIncidents();
+                    break;
+                case 5:
+                    verifierScoreClient();
+                    break;
+                case 6:
+                    MenuPrincipale.start();
+                    break;
+                default:
+                    System.out.println("Choix invalide !");
             }
 
         }
@@ -39,14 +54,14 @@ public class GestionEcheanceIncident {
     }
 
     public static void showMenu() throws SQLException {
-            System.out.println("\n====== GESTION DES ECHEANCES & INCIDENTS ======");
-            System.out.println("1. Générer les échéances pour un crédit validé");
-            System.out.println("2. Afficher toutes les échéances d'un client");
-            System.out.println("3. Enregistrer un paiement sur une échéance");
-            System.out.println("4. Afficher les incidents d'un client");
-            System.out.println("5. Vérifier le score et la décision automatique d'un client");
-            System.out.println("6. Retour");
-            System.out.print("Votre choix : ");
+        System.out.println("\n====== GESTION DES ECHEANCES & INCIDENTS ======");
+        System.out.println("1. Générer les échéances pour un crédit validé");
+        System.out.println("2. Afficher toutes les échéances d'un client");
+        System.out.println("3. Enregistrer un paiement sur une échéance");
+        System.out.println("4. Afficher les incidents d'un client");
+        System.out.println("5. Vérifier le score et la décision automatique d'un client");
+        System.out.println("6. Retour");
+        System.out.print("Votre choix : ");
     }
 
     // 1 Génération automatique des échéances
@@ -71,7 +86,7 @@ public class GestionEcheanceIncident {
     }
 
     private static List<Echeance> genererEcheancesAutomatiques(Credit credit) {
-        List<Echeance> liste = new java.util.ArrayList<>();
+        List<Echeance> liste = new ArrayList<>();
         double mensualite = credit.getMontantOctroye() / credit.getDureeEnMois();
         LocalDate dateDebut = credit.getDateCredit();
 
@@ -165,11 +180,26 @@ public class GestionEcheanceIncident {
         );
 
         switch (e.getStatutPaiement()) {
-            case PAYE_A_TEMPS -> { incident.setTypeIncident(TypeIncident.PAYE_A_TEMPS); incident.setScore(+10); }
-            case EN_RETARD -> { incident.setTypeIncident(TypeIncident.EN_RETARD); incident.setScore(-5); }
-            case PAYE_EN_RETARD -> { incident.setTypeIncident(TypeIncident.PAYE_EN_RETARD); incident.setScore(-10); }
-            case IMPAYE_NON_REGLE -> { incident.setTypeIncident(TypeIncident.IMPAYE_NON_REGLE); incident.setScore(-20); }
-            case IMPAYE_REGLE -> { incident.setTypeIncident(TypeIncident.IMPAYE_REGLE); incident.setScore(-5); }
+            case PAYE_A_TEMPS:
+                incident.setTypeIncident(TypeIncident.PAYE_A_TEMPS);
+                incident.setScore(+10);
+                break;
+            case EN_RETARD:
+                incident.setTypeIncident(TypeIncident.EN_RETARD);
+                incident.setScore(-5);
+                break;
+            case PAYE_EN_RETARD:
+                incident.setTypeIncident(TypeIncident.PAYE_EN_RETARD);
+                incident.setScore(-10);
+                break;
+            case IMPAYE_NON_REGLE:
+                incident.setTypeIncident(TypeIncident.IMPAYE_NON_REGLE);
+                incident.setScore(-20);
+                break;
+            case IMPAYE_REGLE:
+                incident.setTypeIncident(TypeIncident.IMPAYE_REGLE);
+                incident.setScore(-5);
+                break;
         }
         return incident;
     }
@@ -199,41 +229,48 @@ public class GestionEcheanceIncident {
     }
 
     // 5 Vérification du score et décision automatique
-//    private static void verifierScoreClient() throws SQLException {
-//        System.out.print("ID du client : ");
-//        long clientId = scanner.nextLong();
-//        scanner.nextLine();
-//
-//        Optional<Personne> persoOpt = ClientService.chercherClientParId(clientId); // à créer
-//        if (!persoOpt.isPresent()) {
-//            System.out.println("Client introuvable !");
-//            return;
-//        }
-//
-//        Personne p = persoOpt.get();
-//        List<Credit> credits = CreditService.getCreditsByClientId(p.getId());
-//        boolean nouveauClient = credits.isEmpty();
-//
-//        int score = ScoringSystem.totalScore(p);
-//        String decision = ScoringSystem.decisionCredit(p, nouveauClient);
-//
-//        System.out.println("Score total : " + score + "/100");
-//        System.out.println("Décision automatique : " + decision);
-//
-//        // Gestion interactive de l'étude manuelle
-//        if (decision.equals("ETUDE MANUELLE")) {
-//            System.out.println("Le score du client nécessite une étude manuelle.");
-//            System.out.println("Veuillez vérifier les détails du client et les incidents.");
-//            afficherEcheances();
-//            afficherIncidents();
-//
-//            System.out.print("Voulez-vous ACCORDER le crédit après étude manuelle ? (O/N) : ");
-//            String choix = scanner.nextLine();
-//            if(choix.equalsIgnoreCase("O")) {
-//                System.out.println("Crédit accordé après étude manuelle !");
-//            } else {
-//                System.out.println("Crédit refusé après étude manuelle !");
-//            }
-//        }
-//    }
+    private static void verifierScoreClient() throws SQLException {
+        System.out.print("ID du client : ");
+        long clientId = scanner.nextLong();
+        scanner.nextLine();
+
+        Optional<Personne> persoOpt = ClientService.chercherClientParId(clientId);
+        if (!persoOpt.isPresent()) {
+            System.out.println("Client introuvable !");
+            return;
+        }
+
+        Personne p = persoOpt.get();
+
+        // Calcul du score total
+        int score = ScoringSystem.totalScore(p);
+        // Décision automatique initiale
+        Decision decision = ScoringSystem.decisonAutomatique(p);
+
+        System.out.println("Score total : " + score + "/100");
+        System.out.println("Décision automatique : " + decision);
+
+        // Cas spécifique : étude manuelle
+        if (decision == Decision.ETUDE_MANUELLE) {
+            System.out.println("Le score du client nécessite une étude manuelle.");
+            System.out.println("Veuillez examiner ses échéances et incidents avant de décider.");
+
+            afficherEcheances();
+            afficherIncidents();
+
+            System.out.print("Voulez-vous ACCORDER le crédit après étude manuelle ? (O/N) : ");
+            String choix = scanner.nextLine();
+            if (choix.equalsIgnoreCase("O")) {
+                decision = Decision.ACCORD_IMMEDIAT;
+                System.out.println("Crédit accordé après étude manuelle !");
+            } else {
+                decision = Decision.REFUS_AUTOMATIQUE;
+                System.out.println("Crédit refusé après étude manuelle !");
+            }
+        }
+
+        // Affichage de la décision finale (après éventuelle étude manuelle)
+        System.out.println(">>> Décision finale : " + decision);
+    }
+
 }
