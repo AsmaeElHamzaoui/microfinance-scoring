@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="microfinance-scoring:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/microfinance_scoring_jar</output-path>
+    <root id="archive" name="microfinance-scoring.jar">
+      <element id="module-output" name="microfinance-scoring" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/postgresql-42.7.4 (1).jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
