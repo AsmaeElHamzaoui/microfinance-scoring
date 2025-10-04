@@ -229,7 +229,7 @@ public class GestionEcheanceIncident {
     }
 
     // 5 Vérification du score et décision automatique
-    private static void verifierScoreClient() throws SQLException {
+    private static void verifierScoreClient() throws Exception {
         System.out.print("ID du client : ");
         long clientId = scanner.nextLong();
         scanner.nextLine();

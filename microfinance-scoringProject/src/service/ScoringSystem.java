@@ -8,9 +8,7 @@ import model.enums.SituationFamiliale;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Service central pour le calcul du score crédit
@@ -72,6 +70,71 @@ public class ScoringSystem {
     }
 
     // **** HISTORIQUE (15 points) **** //
+    public static int historiquePaiement(Personne personne) throws Exception{
+        int score=0;
+        List<Credit> credits=CreditService.getCreditsByClientId(personne.getId());
+        if(credits.isEmpty()){
+            return score; // dans le cas ou il n'existe aucun crédit pour cette personne
+        }
+
+        //Récuper le dernier credit
+        Credit dernierCredit=credits
+                .stream()
+                .max(Comparator.comparing(Credit::getDateCredit))
+                .orElse(null);
+
+        if(dernierCredit==null) return score;
+
+        List<Echeance> echeances=EcheanceService.getEcheancesByCreditId(dernierCredit.getId());
+        int nbrRetads=0;
+        boolean aucunIncident=true;
+
+        for(Echeance e:echeances){
+            List<Incident> incidents=IncidentService.getIncidentsByEcheanceId(e.getId());
+            for(Incident i:incidents){
+                  switch(i.getTypeIncident()){
+                      case IMPAYE_NON_REGLE :
+                          score -=10;
+                          aucunIncident = false;
+                          break;
+                      case IMPAYE_REGLE:
+                          score +=5;
+                          aucunIncident = false;
+                          break;
+                      case EN_RETARD:
+                          nbrRetads++;
+                          aucunIncident = false;
+                          break;
+                      case PAYE_EN_RETARD:
+                          score +=3;
+                          aucunIncident = false;
+                          break;
+                      default:
+                          break;
+                  }
+            }
+        }
+
+        //traitement des retards sur le dernier crédit
+        if(nbrRetads>=1 && nbrRetads<=3){
+            score -=3;
+        }else if(nbrRetads >=4){
+            score -=5;
+        }
+
+        //dans le cas ou tout les incidents ont le statut : payé au temps
+        if(aucunIncident){
+            score +=10;
+        }
+
+        //Garder les 15 points c'est aucun cas est réalisable:
+        if(score>15) score=15;
+        if(score< -15) score =-15;
+
+
+        return score;
+
+    }
 
 
     // **** RELATION CLIENT (10 points) *** ///
@@ -136,12 +199,11 @@ public class ScoringSystem {
     }
 
 
-
-    public static int totalScore(Personne personne) throws SQLException {
+    public static int totalScore(Personne personne) throws Exception {
         int score = 0;
         score += stabiliteProffessionnelle(personne);
         score += capaciteFinanciere(personne);
-       // score += capaciteFinanciere(personne);
+        score += historiquePaiement(personne);
         score += relationClient(personne);
         score += criteresComplementaire(personne);
 
@@ -151,16 +213,16 @@ public class ScoringSystem {
     //Caclcul du montant octroyé:
     public static double calculMontantOctroye(Personne personne) throws SQLException {
         List<Credit> listCredit = CreditService.getCreditsByClientId(personne.getId());
-        boolean nouveau=listCredit.isEmpty();
-        double montantOctroye=0;
-        if(nouveau && personne instanceof Employe){
-            Employe e=(Employe) personne;
-            montantOctroye=e.getSalaire() * 4;
-        }else if(personne instanceof Professionnel){
-            Professionnel p=(Professionnel) personne;
-            if(totalScore(p)>=60 && totalScore(p)<=80){
+        boolean nouveau = listCredit.isEmpty();
+        double montantOctroye = 0;
+        if (nouveau && personne instanceof Employe) {
+            Employe e = (Employe) personne;
+            montantOctroye = e.getSalaire() * 4;
+        } else if (personne instanceof Professionnel) {
+            Professionnel p = (Professionnel) personne;
+            if (totalScore(p) >= 60 && totalScore(p) <= 80) {
                 montantOctroye = p.getRevenu() * 7;
-            }else if(totalScore(p)>80){
+            } else if (totalScore(p) > 80) {
                 montantOctroye = p.getRevenu() * 10;
             }
         }
@@ -170,22 +232,22 @@ public class ScoringSystem {
 
     //Décision automatique :
     public static Decision decisonAutomatique(Personne personne) throws SQLException {
-        List<Credit> listCredit=CreditService.getCreditsByClientId(personne.getId());
-        boolean nouveau =listCredit.isEmpty();
+        List<Credit> listCredit = CreditService.getCreditsByClientId(personne.getId());
+        boolean nouveau = listCredit.isEmpty();
 
-        if(totalScore(personne)>=80){
+        if (totalScore(personne) >= 80) {
             return Decision.ACCORD_IMMEDIAT;
-        }else if(nouveau){
-            if(totalScore(personne)>=60 && totalScore(personne)<=70){
-               return Decision.ETUDE_MANUELLE;
-            }else if(totalScore(personne)<60){
+        } else if (nouveau) {
+            if (totalScore(personne) >= 60 && totalScore(personne) <= 70) {
+                return Decision.ETUDE_MANUELLE;
+            } else if (totalScore(personne) < 60) {
                 return Decision.REFUS_AUTOMATIQUE;
             }
-        }else{
-            if (totalScore(personne)>=50 && totalScore(personne)<=79){
-               return Decision.ETUDE_MANUELLE;
-            }else if(totalScore(personne)<50){
-               return Decision.REFUS_AUTOMATIQUE;
+        } else {
+            if (totalScore(personne) >= 50 && totalScore(personne) <= 79) {
+                return Decision.ETUDE_MANUELLE;
+            } else if (totalScore(personne) < 50) {
+                return Decision.REFUS_AUTOMATIQUE;
             }
         }
         return Decision.REFUS_AUTOMATIQUE;
