@@ -15,7 +15,7 @@ public class Employe extends Personne {
 
     // Constructeur sans id
     public Employe(String nom, String prenom, LocalDate dateNaissance, String ville, int nombreEnfants,
-                   double investissement, double placement, SituationFamiliale situationFamiliale,
+                   boolean investissement, boolean placement, SituationFamiliale situationFamiliale,
                    LocalDateTime createdAt, int score, double salaire, int anciennete, String poste,
                    TypeContrat typeContrat, SecteurEmploye secteur) {
         super(nom, prenom, dateNaissance, ville, nombreEnfants, investissement, placement, situationFamiliale, createdAt, score);

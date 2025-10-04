@@ -26,7 +26,7 @@ public class Incident {
     public int getEcheanceId() {return echeanceId;}
     public void setEcheanceId(int echeanceId) {this.echeanceId = echeanceId;}
     public LocalDate getDateIncident() { return dateIncident; }
-    public void setDateIncident(LocalDate dateIncident) { this.dateIncident = dateIncident; }
+    public void seAtDateIncident(LocalDate dateIncident) { this.dateIncident = dateIncident; }
     public Echeance getEcheance() { return echeance; }
     public void setEcheance(Echeance echeance) { this.echeance = echeance; }
     public int getScore() { return score; }

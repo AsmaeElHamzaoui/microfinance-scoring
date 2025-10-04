@@ -37,7 +37,7 @@ public class CreditService {
         }
     }
 
-    public List<Credit> getCreditsByClientId(long clientId) throws SQLException {
+    public static List<Credit> getCreditsByClientId(long clientId) throws SQLException {
         try {
             return repoCredit.findByClientId(clientId);
         } catch (Exception e) {

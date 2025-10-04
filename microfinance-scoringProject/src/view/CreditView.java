@@ -5,27 +5,30 @@ import model.Personne;
 import model.enums.Decision;
 import service.ClientService;
 import service.CreditService;
+import service.ScoringSystem;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
+
+
 public class CreditView {
     private static Scanner sc = new Scanner(System.in);
     private static CreditService creditService = new CreditService();
     private static final ClientService clientService = new ClientService();
 
-    public void gestionCredit() throws Exception{
+    public void gestionCredit() throws Exception {
         boolean running = true;
 
         //while loop
         while (running) {
             showMenu();
-            int choix=sc.nextInt();
+            int choix = sc.nextInt();
             sc.nextLine();
 
-            switch(choix){
+            switch (choix) {
                 case 1:
                     ajouterCredit();
                     break;
@@ -36,9 +39,9 @@ public class CreditView {
                     afficherCredits();
                     break;
                 case 4:
-                    ajouterCredit();
+                    running = false;
+                    MenuPrincipale.start();
                     break;
-
                 default:
                     System.out.println("choix invaldie !!!");
             }
@@ -65,19 +68,27 @@ public class CreditView {
         long clientId = Long.parseLong(sc.nextLine());
 
         // Vérifier si le client existe
-        if (clientService.chercherClientParId(clientId).isEmpty()) {
+        Optional<Personne> clientOpt=clientService.chercherClientParId(clientId);
+        if (clientOpt.isEmpty()) {
             System.out.println("Erreur : Client avec l'ID " + clientId + " n'existe pas !");
             return;
         }
 
+        Personne personne=clientOpt.get();
 
         LocalDate dateCredit = LocalDate.now();
 
         System.out.println("Montant demandé :");
         double montantDemande = Double.parseDouble(sc.nextLine());
 
-        //générer automatiquement
-        double montantOctroye = Double.parseDouble(sc.nextLine());
+        //Calcul automtique du montant octroyé:
+        double montantOctroye =ScoringSystem.calculMontantOctroye(personne);
+        //vérification pour ne pas dépasser le montant demandé:
+        if(montantOctroye>montantDemande){
+            montantOctroye = montantDemande;
+        }
+
+        System.out.println("le montant octroyé pour cette personne est :" +montantOctroye);
 
         System.out.println("Taux d'intérêt (ex: 0.05 pour 5%) :");
         double tauxInteret = Double.parseDouble(sc.nextLine());
@@ -89,9 +100,9 @@ public class CreditView {
         String typeCredit = sc.nextLine();
 
         //Décision automatique
-        //System.out.println("Décision (APPROUVE, REFUSE, EN_ATTENTE) :");
-        Decision decision = null;
-
+        Decision decision = ScoringSystem.decisonAutomatique(personne);
+        System.out.println("Décision du crédit est :" + decision);
+        System.out.println("le score est :" + ScoringSystem.totalScore(personne));
         // Création de l'objet Credit
         Credit credit = new Credit(clientId, dateCredit, montantDemande, montantOctroye, tauxInteret,
                 dureeEnMois, typeCredit, decision);
@@ -107,10 +118,13 @@ public class CreditView {
         sc.nextLine();
 
         Optional<Personne> personne = clientService.chercherClientParId(id);
-        Optional<Credit> credit = creditService.chercherCreditParId(id);
-        if (personne.isPresent() && credit.isPresent()) {
-            System.out.println("personne trouvee :");
-            System.out.println(credit.get().toString());
+        List<Credit> credits = CreditService.getCreditsByClientId(id);
+        if (personne.isPresent() && !credits.isEmpty()) {
+            System.out.println("Personne trouvée : " + personne.get().getNom() + " " + personne.get().getPrenom());
+            System.out.println("Listes des crédits :");
+            for(Credit c:credits){
+                System.out.println(c.toString());
+            }
         } else {
             System.out.println("aucune resultat trouvee ");
         }
@@ -128,6 +142,10 @@ public class CreditView {
         }
 
     }
+
+
+
+
 
 }
 

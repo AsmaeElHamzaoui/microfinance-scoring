@@ -2,6 +2,7 @@ package service;
 
 
 import model.*;
+import model.enums.Decision;
 import model.enums.SituationFamiliale;
 
 import java.sql.SQLException;
@@ -125,14 +126,15 @@ public class ScoringSystem {
     // ****  CRITÈRES COMPLÉMENTAIRES (10 points) *** //
     public static int criteresComplementaire(Personne personne) {
         int score = 0;
-        if (personne.getInvestissement() == 1) {
+        if (personne.getInvestissement() == true) {
             return score += 10;
         }
-        if (personne.getPlacement() == 1) {
+        if (personne.getPlacement() == true) {
             return score += 10;
         }
         return score;
     }
+
 
 
     public static int totalScore(Personne personne) throws SQLException {
@@ -145,5 +147,49 @@ public class ScoringSystem {
 
         return score;
     }
+
+    //Caclcul du montant octroyé:
+    public static double calculMontantOctroye(Personne personne) throws SQLException {
+        List<Credit> listCredit = CreditService.getCreditsByClientId(personne.getId());
+        boolean nouveau=listCredit.isEmpty();
+        double montantOctroye=0;
+        if(nouveau && personne instanceof Employe){
+            Employe e=(Employe) personne;
+            montantOctroye=e.getSalaire() * 4;
+        }else if(personne instanceof Professionnel){
+            Professionnel p=(Professionnel) personne;
+            if(totalScore(p)>=60 && totalScore(p)<=80){
+                montantOctroye = p.getRevenu() * 7;
+            }else if(totalScore(p)>80){
+                montantOctroye = p.getRevenu() * 10;
+            }
+        }
+        return montantOctroye;
+    }
+
+
+    //Décision automatique :
+    public static Decision decisonAutomatique(Personne personne) throws SQLException {
+        List<Credit> listCredit=CreditService.getCreditsByClientId(personne.getId());
+        boolean nouveau =listCredit.isEmpty();
+
+        if(totalScore(personne)>=80){
+            return Decision.ACCORD_IMMEDIAT;
+        }else if(nouveau){
+            if(totalScore(personne)>=60 && totalScore(personne)<=70){
+               return Decision.ETUDE_MANUELLE;
+            }else if(totalScore(personne)<60){
+                return Decision.REFUS_AUTOMATIQUE;
+            }
+        }else{
+            if (totalScore(personne)>=50 && totalScore(personne)<=79){
+               return Decision.ETUDE_MANUELLE;
+            }else if(totalScore(personne)<50){
+               return Decision.REFUS_AUTOMATIQUE;
+            }
+        }
+        return Decision.REFUS_AUTOMATIQUE;
+    }
+
 }
 

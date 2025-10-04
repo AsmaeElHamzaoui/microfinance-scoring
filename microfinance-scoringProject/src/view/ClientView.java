@@ -25,17 +25,17 @@ public class ClientView {
 
     //Méthode globale pour la gestion des personnes
 
-    public void gestionPersonne() throws SQLException {
+    public void gestionPersonne() throws Exception {
 
-        boolean running= true;
+        boolean running = true;
 
         //while loop
-        while(running){
+        while (running) {
             showMenu();
-            int choix=sc.nextInt();
+            int choix = sc.nextInt();
             sc.nextLine();
 
-            switch(choix){
+            switch (choix) {
                 case 1:
                     ajouterPersonne();
                     break;
@@ -49,7 +49,14 @@ public class ClientView {
                     supprimerPersonne();
                     break;
                 case 5:
-                    running= false;
+                    modifierPersonne();
+                    break;
+                case 6:
+                    MenuPrincipale.start();
+                    break;
+                case 7:
+                    running = false;
+                    System.out.println("Vous etes hors programme");
                     break;
                 default:
                     System.out.println("choix invalide !!!");
@@ -58,16 +65,15 @@ public class ClientView {
     }
 
 
-
     //afficher menu :
     public static void showMenu() {
         System.out.println("\n=== Gestion des Personnes ===");
         System.out.println("1. Ajouter une Personne");
         System.out.println("2. Afficher une Personne");
         System.out.println("3. Afficher tous les Personnes");
-        System.out.println("4. Modifier une Personne");
-        System.out.println("5. Supprimer une Personne");
-        System.out.println("8. Retour");
+        System.out.println("4. Supprimer une Personne");
+        System.out.println("5. Modifier une Personne");
+        System.out.println("6. Retour");
         System.out.print("Choix : ");
     }
 
@@ -92,12 +98,12 @@ public class ClientView {
         System.out.println("Nombre enfant :");
         int nbEnfants = Integer.parseInt(sc.nextLine());
 
-        System.out.println("Investissement :");
-        int investissement = sc.nextInt();
+        System.out.println("Investissement taper (true or false):");
+        boolean investissement = sc.nextBoolean();
         sc.nextLine();
 
-        System.out.println("placement :");
-        int placement = sc.nextInt();
+        System.out.println("placement taper (true or false):");
+        Boolean placement = sc.nextBoolean();
         sc.nextLine();
 
         System.out.println("Situation familiale (CELIBATAIRE, MARIE, DIVORCE) : ");
@@ -142,7 +148,7 @@ public class ClientView {
                     investissement, placement, situation, createdAt, score,
                     revenu, immatriculation, secteur, activite);
             clientService.ajouterPersonne(p);
-        } else{
+        } else {
             System.out.println("type invalide !!! ");
         }
     }
@@ -152,24 +158,24 @@ public class ClientView {
         System.out.println("Enter l'id de la personne à chercher:");
         Long id = sc.nextLong();
         sc.nextLine();
-        Optional<Personne> personne=clientService.chercherClientParId(id);
-        if(personne.isPresent()){
+        Optional<Personne> personne = clientService.chercherClientParId(id);
+        if (personne.isPresent()) {
             System.out.println("personne trouvée :");
             System.out.println(personne.get().toString());
-        }else{
-            System.out.println("aucune personne est trouvée avec l'id =" +id);
+        } else {
+            System.out.println("aucune personne est trouvée avec l'id =" + id);
         }
     }
 
 
     //afficher tout les personnes (avec les détails selon le type)
-    public static void getAllPersonne() throws SQLException{
+    public static void getAllPersonne() throws SQLException {
         System.out.println("voici la liste de tout les personnes :");
-        List<Personne> personnes=clientService.getAllPersonne();
+        List<Personne> personnes = clientService.getAllPersonne();
 
-        if(personnes.isEmpty()){
+        if (personnes.isEmpty()) {
             System.out.println("Aucune personne récupérée");
-        }else{
+        } else {
             personnes.forEach(System.out::println);
         }
 
@@ -177,16 +183,16 @@ public class ClientView {
     }
 
     //Supprimer une personne
-    public static void supprimerPersonne(){
+    public static void supprimerPersonne() {
         System.out.println("Saisir l'id de l'élément à chercher :");
-        int id=sc.nextInt();
+        int id = sc.nextInt();
         sc.nextLine();
 
-        try{
+        try {
             clientService.deletePersonne(id);
             System.out.println("Le client est bien supprimé");
-        }catch(Exception e){
-            System.out.println("Erreur :" +e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Erreur :" + e.getMessage());
         }
     }
 
@@ -219,11 +225,11 @@ public class ClientView {
 
                 System.out.print("Investissement (actuel: " + existingPersonne.getInvestissement() + ") : ");
                 String investInput = sc.nextLine();
-                double newInvestissement = investInput.isEmpty() ? existingPersonne.getInvestissement() : Double.parseDouble(investInput);
+                boolean newInvestissement = investInput.isEmpty() ? existingPersonne.getInvestissement() : Boolean.parseBoolean(investInput);
 
                 System.out.print("Placement (actuel: " + existingPersonne.getPlacement() + ") : ");
                 String placementInput = sc.nextLine();
-                double newPlacement = placementInput.isEmpty() ? existingPersonne.getPlacement() : Double.parseDouble(placementInput);
+                boolean newPlacement = placementInput.isEmpty() ? existingPersonne.getPlacement() : Boolean.parseBoolean(placementInput);
 
                 System.out.print("Situation familiale (actuelle: " + existingPersonne.getSituationFamiliale() + ") : ");
                 String situationInput = sc.nextLine();
@@ -289,7 +295,6 @@ public class ClientView {
             System.out.println("Erreur : " + e.getMessage());
         }
     }
-
 
 
 }

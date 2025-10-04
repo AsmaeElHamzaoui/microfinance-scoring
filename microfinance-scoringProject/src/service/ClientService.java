@@ -19,7 +19,7 @@ public class ClientService {
         }
     }
 
-    public Optional<Personne> chercherClientParId(Long id) throws SQLException {
+    public static Optional<Personne> chercherClientParId(Long id) throws SQLException {
         try {
             return repoPersone.findById(id);
         } catch (SQLException e) {

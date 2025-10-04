@@ -26,8 +26,8 @@ public class ClientRepository {
             stmt.setDate(3, Date.valueOf(personne.getDateNaissance()));
             stmt.setString(4, personne.getVille());
             stmt.setInt(5, personne.getNombreEnfants());
-            stmt.setDouble(6, personne.getInvestissement());
-            stmt.setDouble(7, personne.getPlacement());
+            stmt.setBoolean(6, personne.getInvestissement());
+            stmt.setBoolean(7, personne.getPlacement());
             stmt.setString(8, personne.getSituationFamiliale().name());
             stmt.setTimestamp(9, Timestamp.valueOf(personne.getCreatedAt()));
             stmt.setInt(10, personne.getScore());
@@ -117,8 +117,8 @@ public class ClientRepository {
             stmt.setDate(3, Date.valueOf(personne.getDateNaissance()));
             stmt.setString(4, personne.getVille());
             stmt.setInt(5, personne.getNombreEnfants());
-            stmt.setDouble(6, personne.getInvestissement());
-            stmt.setDouble(7, personne.getPlacement());
+            stmt.setBoolean(6, personne.getInvestissement());
+            stmt.setBoolean(7, personne.getPlacement());
             stmt.setString(8, personne.getSituationFamiliale().name());
             stmt.setInt(9, personne.getScore());
 
@@ -172,8 +172,8 @@ public class ClientRepository {
                     rs.getDate("date_naissance").toLocalDate(),
                     rs.getString("ville"),
                     rs.getInt("nombre_enfants"),
-                    rs.getDouble("investissement"),
-                    rs.getDouble("placement"),
+                    rs.getBoolean("investissement"),
+                    rs.getBoolean("placement"),
                     model.enums.SituationFamiliale.valueOf(rs.getString("situation_familiale")),
                     rs.getTimestamp("created_at").toLocalDateTime(),
                     rs.getInt("score"),
@@ -190,8 +190,8 @@ public class ClientRepository {
                     rs.getDate("date_naissance").toLocalDate(),
                     rs.getString("ville"),
                     rs.getInt("nombre_enfants"),
-                    rs.getDouble("investissement"),
-                    rs.getDouble("placement"),
+                    rs.getBoolean("investissement"),
+                    rs.getBoolean("placement"),
                     model.enums.SituationFamiliale.valueOf(rs.getString("situation_familiale")),
                     rs.getTimestamp("created_at").toLocalDateTime(),
                     rs.getInt("score"),

@@ -11,15 +11,15 @@ public abstract class Personne {
     private LocalDate dateNaissance;
     private String ville;
     private int nombreEnfants;
-    private double investissement;
-    private double placement;
+    private boolean investissement;
+    private boolean placement;
     private SituationFamiliale situationFamiliale;
     private LocalDateTime createdAt;
     private int score;
 
     // Constructeur sans id pour la création
     public Personne(String nom, String prenom, LocalDate dateNaissance, String ville, int nombreEnfants,
-                    double investissement, double placement, SituationFamiliale situationFamiliale,
+                    boolean investissement, boolean placement, SituationFamiliale situationFamiliale,
                     LocalDateTime createdAt, int score) {
         this.id = 0; // temporaire avant insertion
         this.nom = nom;
@@ -47,10 +47,10 @@ public abstract class Personne {
     public void setVille(String ville) { this.ville = ville; }
     public int getNombreEnfants() { return nombreEnfants; }
     public void setNombreEnfants(int nombreEnfants) { this.nombreEnfants = nombreEnfants; }
-    public double getInvestissement() { return investissement; }
-    public void setInvestissement(double investissement) { this.investissement = investissement; }
-    public double getPlacement() { return placement; }
-    public void setPlacement(double placement) { this.placement = placement; }
+    public boolean getInvestissement() { return investissement; }
+    public void setInvestissement(boolean investissement) { this.investissement = investissement; }
+    public boolean getPlacement() { return placement; }
+    public void setPlacement(boolean placement) { this.placement = placement; }
     public SituationFamiliale getSituationFamiliale() { return situationFamiliale; }
     public void setSituationFamiliale(SituationFamiliale situationFamiliale) { this.situationFamiliale = situationFamiliale; }
     public LocalDateTime getCreatedAt() { return createdAt; }
